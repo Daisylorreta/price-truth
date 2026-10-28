@@ -1,37 +1,42 @@
-# Price Truth
+Price Truth
+Know the price. Buy with confidence.
 
-Price Truth is a static, community-powered price board for comparing everyday
-market prices across locations.
+Price Truth is a community-powered price comparison website designed to help people explore everyday market prices across different locations. It aims to make price information easier to access and help consumers make more informed purchasing decisions.
 
-## Deploy
+Live Demo
+Visit the website: https://daisylorreta.github.io/price-truth/
 
-The deployable site is in `public/`. This repository includes a GitHub Pages
-workflow that publishes that directory automatically whenever changes reach
-`main`.
+Project Overview
+Comparing prices across markets can be difficult. Price Truth provides a platform for exploring everyday items and accessing market price information by location.
+The project focuses on improving price visibility and creating a foundation for community-driven price reporting.
 
-To run it locally, open `public/index.html` in a browser or serve the
-repository with a static web server such as the VS Code Live Server extension.
+Features
+● Browse Prices: Explore items across available categories.
+● Location-Based Browsing: Navigate using location selections.
+● Community Price Reports: Support for sharing and viewing reported market prices.
+● Responsive Interface: Designed for desktop and mobile screens.
+● Item Illustrations: Product images help users recognize items while browsing.
 
-## Tools and technologies
+Technologies
+● HTML5
+● CSS3
+● JavaScript
+● JSON
+● Browser local storage
+● Git and GitHub
+● GitHub Actions
+● GitHub Pages
 
-- Visual Studio Code
-- HTML5
-- CSS3
-- JavaScript
-- JSON and browser LocalStorage
-- SVG item illustrations
-- Git and GitHub
-- GitHub Pages
+Run Locally 1. Clone this repository:
+git clone https://github.com/Daisylorreta/price-truth.git 2. Open the project folder in Visual Studio Code. 3. Open public/index.html in a browser, or use the VS Code Live Server extension.
 
-This is a frontend-only project and does not require a backend runtime,
-database service, or server credentials to run the current website.
+Deployment
+Price Truth is deployed using GitHub Pages and GitHub Actions. The deployment workflow publishes the contents of the public/ directory.
 
-## GitHub Pages setup
+Changes pushed to the configured deployment branch can trigger automatic deployment.
 
-After the first push, open **Settings -> Pages** in the GitHub repository and
-set **Source** to **GitHub Actions**. Future pushes to `main` will deploy
-automatically.
+Project Purpose
+Price Truth is an ongoing portfolio project focused on practical web development, user experience, location-based browsing, and making everyday price information more accessible.
 
-This project is frontend-only and does not require Firebase or server
-credentials. The order and vendor pages are reserved for future backend
-features and are not part of the current static release.
+Author
+GitHub: https://github.com/Daisylorreta
