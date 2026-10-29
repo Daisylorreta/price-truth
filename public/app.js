@@ -759,8 +759,29 @@ Kosovo|🇽🇰|XK|EUR|€
       };
     }
 
-    // Never present generated seed values as if they were local market evidence.
-    // An empty result is safer than a plausible but unsupported price.
+    // Show a clearly labelled estimate when community reports are unavailable.
+    const basePrice = itemSeedPrice(item);
+    const multiplier = locationMultiplier(
+      context.countryKey,
+      context.stateIndex,
+      context.market,
+    );
+    const rate = countries[context.countryKey].rate;
+
+    if (basePrice > 0) {
+      const estimate = basePrice * multiplier * rate;
+
+      return {
+        type: "estimate",
+        context,
+        reports: [],
+        count: 0,
+        low: Math.round(estimate * 0.9),
+        high: Math.round(estimate * 1.1),
+        average: Math.round(estimate),
+      };
+    }
+
     return {
       type: "unavailable",
       context,
@@ -791,7 +812,6 @@ Kosovo|🇽🇰|XK|EUR|€
     const featured = [0, 1, 2].map(
       (step) => names[(offset + step) % names.length],
     );
-    const reportCount = 180 + ((dayNumber + countryKey.charCodeAt(0) * 7) % 90);
     const rows = featured
       .map((name) => {
         const itemIndex = names.indexOf(name);
@@ -827,8 +847,8 @@ Kosovo|🇽🇰|XK|EUR|€
     board
       .querySelector(".receipt-line")
       .insertAdjacentHTML("beforebegin", rows);
-    board.querySelector(".receipt-footer").innerHTML =
-      "based on " + reportCount + " local reports <span>✦</span>";
+    board.querySelector(".receipt-footer").textContent =
+      "Illustrative estimates. Not verified reports";
     const trend = document.querySelector("[data-board-trend]");
     if (trend)
       trend.textContent =
@@ -1415,12 +1435,15 @@ Kosovo|🇽🇰|XK|EUR|€
       intro.innerHTML =
         (result.type === "community"
           ? "COMMUNITY PRICES"
-          : "NO VERIFIED PRICE DATA") +
+          : result.type === "estimate"
+            ? "INDICATIVE PRICE ESTIMATE"
+            : "NO VERIFIED PRICE DATA") +
         " · " +
         context.country.toUpperCase() +
         " · " +
         context.state.toUpperCase() +
         ' <span class="live-dot"></span>';
+
     if (description)
       description.textContent =
         result.type === "community"
@@ -1432,32 +1455,60 @@ Kosovo|🇽🇰|XK|EUR|€
             context.state +
             ", " +
             context.country
-          : "No matching community reports for " +
-            title.toLowerCase() +
-            " in " +
-            context.market +
-            ", " +
-            context.state +
-            ", " +
-            context.country +
-            ". Submit a report to establish a local price.";
+          : result.type === "estimate"
+            ? "An indicative estimate for " +
+              title.toLowerCase() +
+              " in " +
+              context.market +
+              ", " +
+              context.state +
+              ", " +
+              context.country +
+              ". This is not a verified community price. Actual prices may differ."
+            : "No matching community reports for " +
+              title.toLowerCase() +
+              " in " +
+              context.market +
+              ", " +
+              context.state +
+              ", " +
+              context.country +
+              ". Submit a report to establish a local price.";
+
     if (range)
       range.innerHTML =
         result.type === "community"
           ? formatLocalMoney(result.low) +
             " <span>—</span> " +
             formatLocalMoney(result.high)
-          : "Price data unavailable";
+          : result.type === "estimate"
+            ? formatLocalMoney(result.low) +
+              " <span>—</span> " +
+              formatLocalMoney(result.high)
+            : "Price data unavailable";
+
     if (typical)
       typical.textContent =
         result.type === "community"
           ? formatLocalMoney(result.average)
-          : "Awaiting reports";
+          : result.type === "estimate"
+            ? formatLocalMoney(result.average)
+            : "Awaiting reports";
+
     if (badge) {
       badge.textContent =
-        result.type === "community" ? "● Community reported" : "● No data";
+        result.type === "community"
+          ? "● Community reported"
+          : result.type === "estimate"
+            ? "● Indicative estimate"
+            : "● No data";
       badge.className =
-        "badge " + (result.type === "community" ? "good" : "neutral");
+        "badge " +
+        (result.type === "community"
+          ? "good"
+          : result.type === "estimate"
+            ? "neutral"
+            : "neutral");
     }
     if (count) count.textContent = String(result.count);
     if (countLabel)
@@ -1466,15 +1517,19 @@ Kosovo|🇽🇰|XK|EUR|€
         : "matching reports<br>in this market";
     if (marker)
       marker.textContent =
-        result.type === "community"
+        result.type === "community" || result.type === "estimate"
           ? formatLocalMoney(result.average)
           : "No data";
+
     if (trackLabels.length >= 2) {
       trackLabels[0].textContent =
-        result.type === "community" ? formatLocalMoney(result.low * 0.88) : "—";
+        result.type === "community" || result.type === "estimate"
+          ? formatLocalMoney(result.low)
+          : "—";
+
       trackLabels[1].textContent =
-        result.type === "community"
-          ? formatLocalMoney(result.high * 1.12)
+        result.type === "community" || result.type === "estimate"
+          ? formatLocalMoney(result.high)
           : "—";
     }
     if (reportLink)
